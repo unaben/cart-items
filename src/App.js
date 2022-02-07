@@ -1,25 +1,59 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import ToDoItems from "./component/ToDoItems";
 
-function App() {
+
+export default function App() {
+  const [items, setItems] = useState("");
+  const [displayItems, setDisplayItems] = useState([]);
+  console.log({ items: items, displayItems: displayItems });
+
+  function handleDelete(id) {
+    console.log("inside handleDelete: ", id);
+    setDisplayItems((prevItems) => {
+      console.log(prevItems);
+      return prevItems.filter((item, index) => {
+        return index !== id;
+      });
+    });
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <>
+      <header>
+        <h1>Item Cart</h1>
       </header>
-    </div>
+      <input
+        onChange={(event) => {
+          setItems(event.target.value);
+        }}
+        type="item"
+        placeholder="Enter items to add..."
+        value={items}
+      />
+      <button
+        onClick={() => {
+          setDisplayItems((prevItem) => {
+            return [...prevItem, items];
+          });
+          setItems("");
+        }}
+      >
+        Add Items
+      </button>
+      <ul>
+        {displayItems.map((item, index) => {
+          console.log("Items:", item, index);
+          return (
+            <ToDoItems
+              item={item}
+              key={index}
+              id={index}
+              onDelete={handleDelete}
+            />
+          );
+        })}
+      </ul>
+    </>
   );
 }
-
-export default App;
